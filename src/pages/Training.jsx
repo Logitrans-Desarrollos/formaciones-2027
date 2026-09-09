@@ -4,19 +4,43 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import logo from '../assets/logitranslogo.png';
 import { slides, courseInfo } from '../data/slides';
+import { getUserData } from '../utils/userStorage';
+import RegistrationGate from '../components/RegistrationGate';
 import Narrator from '../components/Narrator';
 import VideoModule from '../components/VideoModule';
 import SlideVisual from '../components/SlideVisual';
 import QuizFinal from '../components/QuizFinal';
 import ProgressBar from '../components/ProgressBar';
 
+const COURSE_ID = 'sarlaft-2026';
 const TOTAL_STEPS = slides.length + 1; // + quiz final
 
 function Training() {
   const navigate = useNavigate();
+
+  // Datos del participante (nombre, cédula, cargo) — se piden antes de iniciar
+  const [userData, setUserData] = useState(() => getUserData(COURSE_ID));
+  // Siempre arrancamos mostrando la puerta de registro (pide o confirma los
+  // datos); si ya hay datos guardados, RegistrationGate muestra un resumen
+  // con un botón "Continuar" en vez de pedirlos de nuevo.
+  const [gatePassed, setGatePassed] = useState(false);
+
   const [step, setStep] = useState(0); // 0..slides.length-1 = diapositivas, slides.length = quiz
   const [narrationDone, setNarrationDone] = useState(false);
   const [pollRevealed, setPollRevealed] = useState(false);
+
+  if (!gatePassed) {
+    return (
+      <RegistrationGate
+        courseId={COURSE_ID}
+        existingData={userData}
+        onComplete={(data) => {
+          setUserData(data);
+          setGatePassed(true);
+        }}
+      />
+    );
+  }
 
   const isQuiz = step === slides.length;
   const currentSlide = !isQuiz ? slides[step] : null;
@@ -81,7 +105,7 @@ function Training() {
                 transition={{ duration: 0.3 }}
                 className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5 md:p-7 mt-2"
               >
-                <QuizFinal onFinish={() => navigate('/')} />
+                <QuizFinal courseId={COURSE_ID} userData={userData} onFinish={() => navigate('/')} />
               </motion.div>
             ) : (
               <motion.div
