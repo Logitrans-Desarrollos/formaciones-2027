@@ -3,8 +3,9 @@
 // Cada slide incluye:
 //  - narration: texto que se lee con Text-to-Speech Y que sirve como guion
 //    para generar un video con avatar en una plataforma externa (Synthesia, HeyGen, D-ID...)
-//  - videoSrc: si en el futuro se agrega un .mp4 real narrado, se coloca aquí
-//    (ej: '/videos/slide1.mp4') y el reproductor lo usará en vez de la voz sintetizada.
+//  - videoClips: rutas a las "tomas" de video reales generadas con IA (máx. 10s
+//    cada una, ej: 'videos/escena1.mp4'), en el orden en que se deben reproducir.
+//    Mientras el arreglo esté vacío, se usa la narración por voz del navegador.
 
 export const slides = [
   {
@@ -12,7 +13,9 @@ export const slides = [
     duration: '1 min',
     title: 'Bienvenida',
     kicker: 'Diapositiva 1',
-    videoSrc: null,
+    // Tomas de video (máx. 10s cada una) generadas con IA, en orden.
+    // Agrega aquí más rutas ('videos/escenaN.mp4') a medida que generes las que faltan.
+    videoClips: ['videos/escena1.mp4', 'videos/escena2.mp4'],
     type: 'poll',
     poll: {
       question: '¿Quién cree que el SARLAFT es responsabilidad únicamente del Oficial de Cumplimiento?',
@@ -30,7 +33,7 @@ export const slides = [
     duration: '2 min',
     title: '¿Qué es el SARLAFT?',
     kicker: 'Diapositiva 2',
-    videoSrc: null,
+    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
     type: 'checklist',
     definition:
       'SARLAFT es el Sistema de Administración del Riesgo de Lavado de Activos, Financiación del Terrorismo y Financiamiento de la Proliferación de Armas de Destrucción Masiva.',
@@ -47,7 +50,7 @@ export const slides = [
     duration: '2 min',
     title: '¿Por qué hablamos de esto en 2026?',
     kicker: 'Diapositiva 3',
-    videoSrc: null,
+    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
     type: 'checklist',
     definition:
       'La Resolución 4607 de 2026 fortaleció los controles que debemos demostrar como empresa vigilada por la Superintendencia de Transporte.',
@@ -66,7 +69,7 @@ export const slides = [
     duration: '3 min',
     title: 'Así funciona en Logitrans',
     kicker: 'Diapositiva 4',
-    videoSrc: null,
+    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
     type: 'process',
     question: '¿Qué hacemos antes de crear un tercero?',
     steps: [
@@ -92,7 +95,7 @@ export const slides = [
     duration: '2 min',
     title: '¿Dónde están nuestros riesgos?',
     kicker: 'Diapositiva 5',
-    videoSrc: null,
+    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
     type: 'riskmap',
     groups: [
       { icon: 'users', label: 'Las personas con las que hacemos negocios', items: ['Transportadores', 'Conductores', 'Proveedores'] },
@@ -111,7 +114,7 @@ export const slides = [
     duration: '2 min',
     title: 'Todos somos responsables',
     kicker: 'Diapositiva 6',
-    videoSrc: null,
+    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
     type: 'tools',
     tools: [
       'Política de Administración del Riesgo LA/FT/FP',
@@ -130,7 +133,7 @@ export const slides = [
     duration: '1 min',
     title: 'Cierre',
     kicker: 'Diapositiva 7',
-    videoSrc: null,
+    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
     type: 'closing',
     message:
       'El SARLAFT no depende únicamente del Oficial de Cumplimiento. Cada colaborador contribuye a proteger a Logitrans, a nuestros clientes y a la operación de transporte de carga por carretera. Detectar y reportar una situación inusual puede evitar riesgos para toda la organización.',

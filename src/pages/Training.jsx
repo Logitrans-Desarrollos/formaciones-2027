@@ -118,8 +118,8 @@ function Training() {
               >
                 <h2 className="text-2xl md:text-3xl font-bold text-zinc-100">{currentSlide.title}</h2>
 
-                {currentSlide.videoSrc ? (
-                  <VideoModule src={currentSlide.videoSrc} onEnded={handleNarrationEnd} />
+                {currentSlide.videoClips && currentSlide.videoClips.length > 0 ? (
+                  <VideoModule clips={currentSlide.videoClips} onEnded={handleNarrationEnd} />
                 ) : (
                   <>
                     <SlideVisual slide={currentSlide} revealed={pollRevealed} />
