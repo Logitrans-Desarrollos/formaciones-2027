@@ -33,7 +33,7 @@ export const slides = [
     duration: '2 min',
     title: '¿Qué es el SARLAFT?',
     kicker: 'Diapositiva 2',
-    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
+    videoClips: ['videos/escena4.mp4'],
     type: 'checklist',
     definition:
       'SARLAFT es el Sistema de Administración del Riesgo de Lavado de Activos, Financiación del Terrorismo y Financiamiento de la Proliferación de Armas de Destrucción Masiva.',
