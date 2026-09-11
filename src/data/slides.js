@@ -15,7 +15,7 @@ export const slides = [
     kicker: 'Diapositiva 1',
     // Tomas de video (máx. 10s cada una) generadas con IA, en orden.
     // Agrega aquí más rutas ('videos/escenaN.mp4') a medida que generes las que faltan.
-    videoClips: ['videos/escena1.mp4', 'videos/escena2.mp4', 'videos/escena3.mp4'],
+    videoClips: ['videos/escena_intro_consolidada.mp4'],
     type: 'poll',
     poll: {
       question: '¿Quién cree que el SARLAFT es responsabilidad únicamente del Oficial de Cumplimiento?',
@@ -33,7 +33,7 @@ export const slides = [
     duration: '2 min',
     title: '¿Qué es el SARLAFT?',
     kicker: 'Diapositiva 2',
-    videoClips: ['videos/escena4.mp4'],
+    videoClips: ['videos/escena_2_consolidada.mp4'],
     type: 'checklist',
     definition:
       'SARLAFT es el Sistema de Administración del Riesgo de Lavado de Activos, Financiación del Terrorismo y Financiamiento de la Proliferación de Armas de Destrucción Masiva.',
