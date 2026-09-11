@@ -98,6 +98,7 @@ function VideoModule({ clips, onEnded }) {
           key={index}
           ref={videoRef}
           className="w-full rounded-2xl shadow-lg border border-zinc-700/50"
+          preload="auto"
           autoPlay
           playsInline
           controlsList="noplaybackrate nodownload nofullscreen"
