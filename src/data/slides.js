@@ -50,7 +50,7 @@ export const slides = [
     duration: '2 min',
     title: '¿Por qué hablamos de esto en 2026?',
     kicker: 'Diapositiva 3',
-    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
+    videoClips: ['videos/escena_3_consolidada.mp4'],
     type: 'checklist',
     definition:
       'La Resolución 4607 de 2026 fortaleció los controles que debemos demostrar como empresa vigilada por la Superintendencia de Transporte.',
