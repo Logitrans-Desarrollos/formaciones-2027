@@ -46,6 +46,8 @@ function VideoModule({ clips, onEnded }) {
         ref={videoRef}
         className="w-full rounded-2xl shadow-lg border border-zinc-700/50"
         controls
+        controlsList="noplaybackrate nodownload"
+        disablePictureInPicture
         autoPlay
         onEnded={handleEnded}
       >
