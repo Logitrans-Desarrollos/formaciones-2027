@@ -69,7 +69,7 @@ export const slides = [
     duration: '3 min',
     title: 'Así funciona en Logitrans',
     kicker: 'Diapositiva 4',
-    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
+    videoClips: ['videos/escena_4_consolidada.mp4'],
     type: 'process',
     question: '¿Qué hacemos antes de crear un tercero?',
     steps: [
@@ -95,7 +95,8 @@ export const slides = [
     duration: '2 min',
     title: '¿Dónde están nuestros riesgos?',
     kicker: 'Diapositiva 5',
-    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
+    // Este video cubre el contenido de las diapositivas 5 y 6 en una sola toma.
+    videoClips: ['videos/escena5_y_6_consolidada.mp4'],
     type: 'riskmap',
     groups: [
       { icon: 'users', label: 'Las personas con las que hacemos negocios', items: ['Transportadores', 'Conductores', 'Proveedores'] },
