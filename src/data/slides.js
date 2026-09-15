@@ -134,7 +134,7 @@ export const slides = [
     duration: '1 min',
     title: 'Cierre',
     kicker: 'Diapositiva 7',
-    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
+    videoClips: ['videos/escena_7_consolidada.mp4'],
     type: 'closing',
     message:
       'El SARLAFT no depende únicamente del Oficial de Cumplimiento. Cada colaborador contribuye a proteger a Logitrans, a nuestros clientes y a la operación de transporte de carga por carretera. Detectar y reportar una situación inusual puede evitar riesgos para toda la organización.',
