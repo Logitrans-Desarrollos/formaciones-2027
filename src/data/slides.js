@@ -95,8 +95,7 @@ export const slides = [
     duration: '2 min',
     title: '¿Dónde están nuestros riesgos?',
     kicker: 'Diapositiva 5',
-    // Este video cubre el contenido de las diapositivas 5 y 6 en una sola toma.
-    videoClips: ['videos/escena5_y_6_consolidada.mp4'],
+    videoClips: ['videos/escena_5_consolidada.mp4'],
     type: 'riskmap',
     groups: [
       { icon: 'users', label: 'Las personas con las que hacemos negocios', items: ['Transportadores', 'Conductores', 'Proveedores'] },
@@ -115,7 +114,7 @@ export const slides = [
     duration: '2 min',
     title: 'Todos somos responsables',
     kicker: 'Diapositiva 6',
-    videoClips: [], // agrega ['videos/escenaN.mp4', ...] cuando tengas las tomas de esta diapositiva
+    videoClips: ['videos/escena_6_consolidada.mp4'],
     type: 'tools',
     tools: [
       'Política de Administración del Riesgo LA/FT/FP',
