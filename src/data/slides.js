@@ -148,11 +148,11 @@ export const quiz = {
   title: 'Quiz de cierre',
   questions: [
     {
-      question: '¿Qué hacemos si una validación genera una alerta?',
+      question: '¿Qué hacemos desde el área de Cumplimiento si se genera una alerta en la creación del tercero?',
       options: [
         { text: 'La ignoramos.', correct: false },
         { text: 'Rechazamos automáticamente al tercero.', correct: false },
-        { text: 'Realizamos Debida Diligencia y evaluamos el riesgo.', correct: true },
+        { text: 'Solicitamos debida diligencia y evaluamos el riesgo.', correct: true },
       ],
     },
     {
