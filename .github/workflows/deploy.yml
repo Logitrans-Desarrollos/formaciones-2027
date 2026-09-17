@@ -1,9 +1,13 @@
-﻿name: Publicar en GitHub Pages
+name: Publicar en GitHub Pages
 
+# Se ejecuta automáticamente cada vez que subes cambios a "main".
+# Todo el proceso (npm install + npm run build) corre en los servidores
+# de GitHub, no en tu computador — por eso no necesitas Node.js instalado
+# localmente para publicar el sitio.
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch: # permite lanzarlo manualmente desde la pestaña "Actions"
 
 permissions:
   contents: read
@@ -18,7 +22,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Descargar el codigo del repositorio
+      - name: Descargar el código del repositorio
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
@@ -30,8 +34,16 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Compilar el proyecto
+      - name: Compilar el proyecto (npm run build)
         run: npm run build
+        env:
+          # Token de GitHub (permiso solo de "Contents" en este repo) usado
+          # para registrar quién completó el curso. Se configura como
+          # "Repository secret" en Settings > Secrets and variables >
+          # Actions, NUNCA se escribe en el código fuente. Vite lo incrusta
+          # en el JavaScript compilado (por eso el token debe estar limitado
+          # solo a este repositorio, como ya se acordó).
+          VITE_GITHUB_WRITE_TOKEN: ${{ secrets.VITE_GITHUB_WRITE_TOKEN }}
 
       - name: Preparar el sitio para publicar
         uses: actions/upload-pages-artifact@v3
