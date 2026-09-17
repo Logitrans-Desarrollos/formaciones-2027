@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, XCircle, Award, Download, RotateCcw, Loader2 } from 'lucide-react';
 import { quiz } from '../data/slides';
 import { downloadCertificate } from '../utils/certificate';
+import { reportCompletion } from '../utils/completions';
 
 const PASSING_PERCENTAGE = 75; // al menos 3 de 4 respuestas correctas
 
@@ -11,6 +12,7 @@ function QuizFinal({ courseId, userData, onFinish }) {
   const [submitted, setSubmitted] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [certError, setCertError] = useState(false);
+  const [reported, setReported] = useState(false);
 
   const selectAnswer = (qIndex, oIndex) => {
     if (submitted) return;
@@ -27,12 +29,22 @@ function QuizFinal({ courseId, userData, onFinish }) {
   const passed = percentage >= PASSING_PERCENTAGE;
   const allAnswered = quiz.questions.every((_, qi) => answers[qi] !== undefined);
 
-  const handleSubmit = () => setSubmitted(true);
+  const handleSubmit = () => {
+    setSubmitted(true);
+    if (passed && !reported) {
+      setReported(true);
+      // No bloquea la interfaz: se registra en segundo plano en GitHub. Si
+      // falla (sin internet, etc.) el usuario sigue viendo su certificado
+      // con normalidad, solo que no quedará marcado como completado.
+      reportCompletion({ courseId, userData, score: percentage });
+    }
+  };
 
   const handleRetry = () => {
     setAnswers({});
     setSubmitted(false);
     setCertError(false);
+    setReported(false);
   };
 
   const handleDownload = async () => {
