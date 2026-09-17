@@ -25,6 +25,7 @@ const OWNER = 'logitrans-desarrollos';
 const REPO = 'formaciones-2027';
 const FILE_PATH = 'data/completions.json';
 const API_BASE = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`;
+const CONTENTS_API = (path) => `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
 
 function getToken() {
   return import.meta.env.VITE_GITHUB_WRITE_TOKEN || '';
@@ -148,4 +149,71 @@ export async function reportCompletion({ courseId, userData, score }) {
     }
   }
   return { ok: false, reason: 'conflict' };
+}
+
+/**
+ * Sube (o reemplaza) el PDF del certificado ya generado en el navegador del
+ * participante al repositorio, en la carpeta `certificados/`, con el mismo
+ * nombre de archivo que se usaba en el proyecto anterior (NOMBRE COMPLETO.pdf)
+ * para que sea fácil de identificar.
+ *
+ * Esto permite que, cada cierto tiempo, se puedan bajar automáticamente todas
+ * las copias nuevas desde el repositorio a la carpeta "Certificados" del
+ * computador de quien administra el curso — sin depender de que cada
+ * participante reenvíe su certificado manualmente.
+ *
+ * Igual que reportCompletion, es "best effort": si falla no interrumpe la
+ * descarga del certificado del participante, solo se deja el error en
+ * consola.
+ */
+export async function uploadCertificatePdf({ nombre, base64Pdf }) {
+  const token = getToken();
+  if (!token || !base64Pdf || !nombre) return { ok: false };
+
+  const filename = `${nombre.trim().toUpperCase()}.pdf`;
+  const path = `certificados/${encodeURIComponent(filename)}`;
+  const url = CONTENTS_API(path);
+
+  try {
+    // Se busca el sha actual (si ya existía un certificado con ese nombre,
+    // por ejemplo de un intento anterior) para poder reemplazarlo.
+    let sha = null;
+    const getRes = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
+    });
+    if (getRes.ok) {
+      const getJson = await getRes.json();
+      sha = getJson.sha;
+    }
+
+    const body = {
+      message: `Certificado: ${filename}`,
+      content: base64Pdf,
+      committer: {
+        name: 'Formaciones 2027 (bot)',
+        email: 'noreply@logitrans-desarrollos.github.io',
+      },
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!putRes.ok) {
+      const text = await putRes.text().catch(() => '');
+      console.error(`[completions] Error subiendo certificado (HTTP ${putRes.status}):`, text);
+      return { ok: false };
+    }
+    return { ok: true };
+  } catch (err) {
+    console.error('[completions] Error subiendo certificado:', err);
+    return { ok: false };
+  }
 }

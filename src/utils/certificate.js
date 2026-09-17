@@ -1,5 +1,6 @@
 import logo from '../assets/logitranslogo.png';
 import firma from '../assets/firma_vanesa.png';
+import { uploadCertificatePdf } from './completions';
 
 // Convierte una imagen importada a base64 para poder incrustarla con html2canvas
 function getBase64Image(imagePath) {
@@ -137,6 +138,17 @@ export async function downloadCertificate({ userData, courseId, score }) {
     const pdfHeight = pdf.internal.pageSize.getHeight();
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save(`certificado-sarlaft-2026-${userData.cedula}.pdf`);
+
+    // Además de descargarlo en el navegador del participante, se sube una
+    // copia al repositorio (en segundo plano) para que quede un archivo
+    // centralizado con todos los certificados emitidos. Si falla (sin
+    // internet, token no configurado, etc.) no afecta la descarga de arriba.
+    try {
+      const base64Pdf = pdf.output('datauristring').split(',')[1];
+      uploadCertificatePdf({ nombre: userData.nombre, base64Pdf });
+    } catch (err) {
+      console.error('[certificate] No se pudo preparar la copia para subir:', err);
+    }
   } finally {
     document.body.removeChild(tempDiv);
   }
