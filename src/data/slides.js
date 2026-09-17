@@ -159,7 +159,7 @@ export const quiz = {
       question: '¿Quién participa en ese análisis?',
       options: [
         { text: 'Solo el Oficial de Cumplimiento.', correct: false },
-        { text: 'Tráfico y el Oficial de Cumplimiento.', correct: true },
+        { text: 'Equipo de cumplimiento', correct: true },
       ],
     },
     {

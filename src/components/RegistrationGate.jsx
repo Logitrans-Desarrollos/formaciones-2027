@@ -1,40 +1,60 @@
 import React, { useState } from 'react';
-import { User, IdCard, Briefcase, CheckCircle } from 'lucide-react';
+import { User, IdCard, Briefcase, Mail, CheckCircle } from 'lucide-react';
 import { courseInfo } from '../data/slides';
-import { saveUserData, clearUserData } from '../utils/userStorage';
+import { saveUserData, clearUserData, isUserDataComplete } from '../utils/userStorage';
+
+// Correo válido y sin espacios sueltos al inicio/final (se limpian con trim()
+// antes de validar y guardar, así el usuario no queda bloqueado por un
+// espacio que pegó sin querer).
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * RegistrationGate
  * ----------------
- * Antes de iniciar el curso, pide Nombre completo, Cédula y Cargo (si aún no
- * se han diligenciado en este navegador). Estos datos se guardan en
+ * Antes de iniciar el curso, pide Nombre completo, Cédula, Cargo y Correo (si
+ * aún no se han diligenciado en este navegador). Estos datos se guardan en
  * localStorage y luego se usan para generar el certificado de finalización
- * con el nombre real del participante.
+ * con el nombre real del participante, y el correo para el seguimiento de
+ * quién ha completado la capacitación.
  *
  * Si ya existen datos guardados para este curso, se muestra un resumen con
  * la opción de continuar con ellos o de cambiarlos (lo que reinicia el
  * progreso del curso, igual que en la versión original).
  */
 function RegistrationGate({ courseId, existingData, onComplete }) {
-  const [nombre, setNombre] = useState('');
-  const [cedula, setCedula] = useState('');
-  const [cargo, setCargo] = useState('');
+  // Si ya había datos guardados (de antes de agregar el campo de correo), se
+  // precargan para no hacer que la persona vuelva a escribir todo — solo le
+  // faltará diligenciar el correo.
+  const [nombre, setNombre] = useState(existingData?.nombre || '');
+  const [cedula, setCedula] = useState(existingData?.cedula || '');
+  const [cargo, setCargo] = useState(existingData?.cargo || '');
+  const [correo, setCorreo] = useState(existingData?.correo || '');
   const [errors, setErrors] = useState({});
   const [changingData, setChangingData] = useState(false);
 
   const validate = () => {
     const newErrors = {};
+    const correoLimpio = correo.trim();
     if (!nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
     if (!cedula.trim()) newErrors.cedula = 'La cédula es obligatoria';
     else if (!/^\d+$/.test(cedula.trim())) newErrors.cedula = 'La cédula debe contener solo números';
     if (!cargo.trim()) newErrors.cargo = 'El cargo es obligatorio';
+    if (!correoLimpio) newErrors.correo = 'El correo es obligatorio';
+    else if (!EMAIL_REGEX.test(correoLimpio)) newErrors.correo = 'Ingresa un correo válido';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = () => {
     if (!validate()) return;
-    const data = { nombre: nombre.trim(), cedula: cedula.trim(), cargo: cargo.trim() };
+    // trim() en cada campo: limpia espacios al inicio/final que el usuario
+    // haya pegado sin querer (muy común al copiar el correo desde otro sitio).
+    const data = {
+      nombre: nombre.trim(),
+      cedula: cedula.trim(),
+      cargo: cargo.trim(),
+      correo: correo.trim().toLowerCase(),
+    };
     saveUserData(courseId, data);
     onComplete(data);
   };
@@ -45,11 +65,14 @@ function RegistrationGate({ courseId, existingData, onComplete }) {
     setNombre('');
     setCedula('');
     setCargo('');
+    setCorreo('');
     setErrors({});
   };
 
-  // Si ya hay datos guardados y el usuario no pidió cambiarlos: mostrar resumen
-  if (existingData && !changingData) {
+  // Si ya hay datos guardados y completos (incluye correo) y el usuario no
+  // pidió cambiarlos: mostrar resumen. Si le falta el correo (registro
+  // guardado antes de agregar este campo), se le pide completarlo abajo.
+  if (existingData && isUserDataComplete(existingData) && !changingData) {
     return (
       <div className="min-h-screen bg-[#09090b] text-white flex items-center justify-center px-4">
         <div className="w-full max-w-lg bg-zinc-800/50 border border-zinc-700 rounded-2xl p-8 text-center">
@@ -60,6 +83,7 @@ function RegistrationGate({ courseId, existingData, onComplete }) {
             <p className="text-sm text-zinc-400">Nombre: <span className="text-zinc-100">{existingData.nombre}</span></p>
             <p className="text-sm text-zinc-400">Cédula: <span className="text-zinc-100">{existingData.cedula}</span></p>
             <p className="text-sm text-zinc-400">Cargo: <span className="text-zinc-100">{existingData.cargo}</span></p>
+            <p className="text-sm text-zinc-400">Correo: <span className="text-zinc-100">{existingData.correo}</span></p>
           </div>
           <div className="flex flex-col md:flex-row gap-3">
             <button
@@ -144,6 +168,26 @@ function RegistrationGate({ courseId, existingData, onComplete }) {
               />
             </div>
             {errors.cargo && <p className="mt-1.5 text-sm text-red-400">{errors.cargo}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-zinc-300 mb-2">Correo electrónico *</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-zinc-400" />
+              </div>
+              <input
+                type="email"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+                onBlur={(e) => setCorreo(e.target.value.trim())}
+                placeholder="nombre@argos.com.co"
+                className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-zinc-900/50 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 transition-colors ${
+                  errors.correo ? 'border-red-500 focus:ring-red-500/50' : 'border-zinc-700 focus:ring-blue-500/50 focus:border-blue-500'
+                }`}
+              />
+            </div>
+            {errors.correo && <p className="mt-1.5 text-sm text-red-400">{errors.correo}</p>}
           </div>
         </div>
 

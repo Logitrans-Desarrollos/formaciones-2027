@@ -1,6 +1,7 @@
-// Guarda y recupera los datos del participante (nombre, cédula, cargo) para
-// un curso específico. Se usa para: (1) no volver a pedir los datos si ya los
-// diligenció antes, y (2) generar el certificado con su nombre real al final.
+// Guarda y recupera los datos del participante (nombre, cédula, cargo, correo)
+// para un curso específico. Se usa para: (1) no volver a pedir los datos si ya
+// los diligenció antes, (2) generar el certificado con su nombre real al
+// final, y (3) el seguimiento de quién ha completado la capacitación.
 
 const STORAGE_PREFIX = 'formaciones2027_user_';
 
@@ -31,5 +32,5 @@ export function clearUserData(courseId) {
 }
 
 export function isUserDataComplete(data) {
-  return !!(data && data.nombre && data.cedula && data.cargo);
+  return !!(data && data.nombre && data.cedula && data.cargo && data.correo);
 }
